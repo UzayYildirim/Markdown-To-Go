@@ -1,39 +1,98 @@
-# markdown-to-go
+# Markdown To Go 📝
 
-This template should help get you started developing with Vue 3 in Vite.
+<p align="center">
+  <img src="/public/Markdown2Go.svg" alt="Markdown To Go Logo" width="200"/>
+</p>
 
-## Recommended IDE Setup
+<p align="center">
+  <strong>A modern, feature-rich online Markdown editor with real-time preview and customization options.</strong>
+</p>
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## ✨ Features
 
-## Type Support for `.vue` Imports in TS
+- **Real-time Preview**: See your formatted content instantly as you type
+- **Custom Font Selection**: Choose from a variety of professional fonts
+- **Color Customization**: Personalize your text color to match your brand
+- **Adjustable Margins**: Fine-tune the layout for perfect presentation
+- **PDF Export**: Generate professional PDFs with a single click
+- **No Account Required**: Start using immediately, no sign-up needed
+- **Local Storage**: Auto-saves your work in the browser
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Syntax Highlighting**: Beautiful code formatting for technical documentation
+- **Privacy-Focused**: Your content stays in your browser - we don't store anything
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 🚀 Getting Started
 
-## Customize configuration
+### Prerequisites
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Node.js (v18 or higher)
+- pnpm (v8 or higher)
 
-## Project Setup
+### Installation
 
-```sh
-pnpm install
-```
+1. Clone the repository
+- bash
+- git clone https://github.com/uzayyildirim/markdown-to-go.git
 
-### Compile and Hot-Reload for Development
+2. Install dependencies
+- bash
+- cd markdown-to-go
+- pnpm install
 
-```sh
-pnpm dev
-```
+3. Start the development server
+- bash
+- pnpm dev
 
-### Type-Check, Compile and Minify for Production
+4. Build for production
+- bash
+- pnpm build
 
-```sh
-pnpm build
-```
+## 🛠️ Built With
 
-### Lint with [ESLint](https://eslint.org/)
+- [Vue 3](https://vuejs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Pinia](https://pinia.vuejs.org/)
+- [Marked](https://marked.js.org/)
+- [DOMPurify](https://github.com/cure53/DOMPurify)
 
-```sh
-pnpm lint
-```
+## 📦 Project Structure
+
+- **markdown-to-go/**
+  - **public/**: Static assets
+  - **src/**
+    - **assets/**: Global styles and assets
+    - **components/**: Vue components
+    - **router/**: Vue Router configuration
+    - **stores/**: Pinia stores
+    - **types/**: TypeScript type definitions
+    - **utils/**: Utility functions
+    - **views/**: Page components
+  - **scripts/**: Build and maintenance scripts
+  - **package.json**: Project dependencies and scripts
+
+## 🚢 Deployment
+
+1. Build the project
+
+2. The built files will be in the `dist` directory. Deploy these files to your web server.
+
+3. For optimal performance, configure your web server with the following:
+   - Enable gzip compression
+   - Set appropriate cache headers
+   - Configure SSL certificate
+   - Set up proper CORS headers if needed
+
+## 🤝 Contributing
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 🌟 Support
+
+If you find this project helpful, please consider:
+- Giving it a star ⭐
+- [Buying me a coffee](https://buymeacoffee.com/uzayyildirim)
