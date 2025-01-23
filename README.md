@@ -1,7 +1,7 @@
 # Markdown To Go 📝
 
 <p align="center">
-  <img src="/public/Markdown2Go.svg" alt="Markdown To Go Logo" width="200"/>
+  <img src="/Markdown2Go.svg" alt="Markdown To Go Logo" width="200"/>
 </p>
 
 <p align="center">
