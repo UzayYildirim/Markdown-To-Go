@@ -7,7 +7,8 @@
   ],
   "exclude": [
     "src/**/__tests__/*",
-    "src/**/HelloWorld.vue"
+    "src/**/HelloWorld.vue",
+    "src/**/TheWelcome.vue"
   ],
   "compilerOptions": {
     "composite": true,
@@ -15,7 +16,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["vite/cl ient"],
+    "types": ["vite/client"],
     "verbatimModuleSyntax": true
   }
 }

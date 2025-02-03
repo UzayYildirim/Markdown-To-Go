@@ -63,6 +63,15 @@
             <i class="mdi mdi-file-document"></i>
             <span>Terms of Service</span>
           </router-link>
+
+          <div class="menu-divider"></div>
+          <button 
+            @click="confirmReset"
+            class="menu-item danger"
+          >
+            <i class="mdi mdi-refresh"></i>
+            <span>Reset Everything</span>
+          </button>
         </div>
       </div>
     </Transition>
@@ -84,6 +93,25 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
   isOpen.value = false
+}
+
+const confirmReset = () => {
+  if (window.confirm('Are you sure you want to reset everything? This will clear your current document and all settings.')) {
+    // Clear localStorage
+    localStorage.clear();
+    
+    // Clear store content
+    store.markdownContent = '';
+    store.selectedFont = 'Calibri';
+    store.selectedColor = '#333333';
+    store.selectedMargin = '1';
+    
+    // Close menu
+    closeMenu();
+    
+    // Reload the page
+    window.location.reload();
+  }
 }
 </script>
 
@@ -204,5 +232,25 @@ const closeMenu = () => {
   .menu {
     min-width: 250px;
   }
+}
+
+.danger {
+  color: #dc3545 !important;
+}
+
+.danger:hover {
+  background: #ffebee !important;
+}
+
+.menu-item.danger {
+  color: #dc3545;
+}
+
+.menu-item.danger i {
+  color: #dc3545;
+}
+
+.menu-item.danger:hover {
+  background: #ffebee;
 }
 </style> 
