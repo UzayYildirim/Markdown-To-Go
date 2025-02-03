@@ -8,6 +8,8 @@
   <strong>A modern, feature-rich online Markdown editor with real-time preview and customization options.</strong>
 </p>
 
+![Responsive Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_Responsive.png?raw=true)
+
 ## ✨ Features
 
 - **Real-time Preview**: See your formatted content instantly as you type
@@ -83,16 +85,11 @@
    - Configure SSL certificate
    - Set up proper CORS headers if needed
 
-## 🤝 Contributing
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 🌟 Support
 
 If you find this project helpful, please consider:
 - Giving it a star ⭐
 - [Buying me a coffee](https://buymeacoffee.com/uzayyildirim)
+
+![Mobile Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_Mobile.png?raw=true)
+![Print Dialog Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_PrintDialog.png?raw=true)
