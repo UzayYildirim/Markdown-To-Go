@@ -36,15 +36,49 @@ watch(revealed, (newValue) => {
         <button 
           @click="store.printDocument"
           class="print-button"
-          :class="{ 
-            'reveal': revealed,
-            'disabled': !store.hasContent 
-          }"
+          :class="{ 'reveal': revealed, 'disabled': !store.hasContent }"
           :disabled="!store.hasContent"
+          title="Print document"
         >
           <i class="mdi mdi-printer"></i>
           <span class="button-text" :class="{ 'reveal': revealed }">Print</span>
         </button>
+
+        <div class="export-group" :class="{ 'reveal': revealed }">
+          <button 
+            @click="store.exportHtml"
+            class="export-button"
+            :class="{ 'disabled': !store.hasContent }"
+            :disabled="!store.hasContent"
+            title="Export as HTML"
+          >
+            <i class="mdi mdi-language-html5"></i>
+            <span class="button-text" :class="{ 'reveal': revealed }">HTML</span>
+          </button>
+
+          <button 
+            @click="store.exportMarkdown"
+            class="export-button"
+            :class="{ 'disabled': !store.hasContent }"
+            :disabled="!store.hasContent"
+            title="Export as Markdown"
+          >
+            <i class="mdi mdi-language-markdown"></i>
+            <span class="button-text" :class="{ 'reveal': revealed }">MD</span>
+          </button>
+
+          <button 
+            @click="store.exportTxt"
+            class="export-button"
+            :class="{ 'disabled': !store.hasContent }"
+            :disabled="!store.hasContent"
+            title="Export as Text"
+          >
+            <i class="mdi mdi-file-document-outline"></i>
+            <span class="button-text" :class="{ 'reveal': revealed }">TXT</span>
+          </button>
+        </div>
+        
         <AppMenu />
       </div>
     </nav>
@@ -177,7 +211,7 @@ watch(revealed, (newValue) => {
 .nav-controls {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .print-button {
@@ -268,6 +302,55 @@ button:disabled {
   margin-bottom: 5px;
 }
 
+/* Export button styles */
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  background-color: white;
+  color: #2c3e50;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  will-change: transform, opacity;
+}
+
+.export-button.reveal {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.7s;
+}
+
+.export-button i {
+  font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+.export-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  background-color: #f8f9fa;
+}
+
+.export-button:hover i {
+  transform: scale(1.1);
+}
+
+.export-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-button.disabled:hover {
+  transform: none;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .navbar {
@@ -283,13 +366,8 @@ button:disabled {
     height: 1.5rem;
   }
 
-  .print-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .print-button i {
-    font-size: 1.1rem;
+  .print-button, .export-group {
+    display: none !important;
   }
 }
 
@@ -409,5 +487,20 @@ button:disabled {
 
 .print-button.disabled:hover {
   background: transparent;
+}
+
+/* Add these styles after the existing export-button styles */
+.export-group {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.export-group.reveal {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.7s;
 }
 </style>

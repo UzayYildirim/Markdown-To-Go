@@ -1,38 +1,90 @@
 <template>
   <div class="menu-container">
-    <button class="menu-button" @click="isOpen = !isOpen" :aria-expanded="isOpen">
+    <button class="menu-button" @click="toggleMenu" title="Menu">
       <i class="mdi mdi-menu"></i>
     </button>
-    
-    <transition name="menu">
-      <nav class="menu" v-if="isOpen" @click="isOpen = false">
-        <div class="menu-content" @click.stop>
-          <router-link to="/" class="menu-item">
-            <i class="mdi mdi-home"></i>
-            Home
-          </router-link>
-          <router-link to="/about" class="menu-item">
+
+    <Transition name="menu">
+      <div v-if="isOpen" class="menu" @click.self="closeMenu">
+        <div class="menu-content">
+          <!-- Add mobile-only buttons at the top of menu -->
+          <div class="mobile-only-buttons">
+            <button 
+              @click="store.printDocument"
+              class="menu-button-mobile"
+              :disabled="!store.hasContent"
+            >
+              <i class="mdi mdi-printer"></i>
+              <span>Print Document</span>
+            </button>
+            
+            <button 
+              @click="store.exportHtml"
+              class="menu-button-mobile"
+              :disabled="!store.hasContent"
+            >
+              <i class="mdi mdi-language-html5"></i>
+              <span>Export as HTML</span>
+            </button>
+
+            <button 
+              @click="store.exportMarkdown"
+              class="menu-button-mobile"
+              :disabled="!store.hasContent"
+            >
+              <i class="mdi mdi-language-markdown"></i>
+              <span>Export as Markdown</span>
+            </button>
+
+            <button 
+              @click="store.exportTxt"
+              class="menu-button-mobile"
+              :disabled="!store.hasContent"
+            >
+              <i class="mdi mdi-file-document-outline"></i>
+              <span>Export as Text</span>
+            </button>
+            
+            <div class="menu-divider"></div>
+          </div>
+
+          <!-- Existing menu items -->
+          <router-link to="/about" class="menu-item" @click="closeMenu">
             <i class="mdi mdi-information"></i>
-            About
+            <span>About</span>
           </router-link>
-          <router-link to="/privacy" class="menu-item">
+          
+          <router-link to="/privacy" class="menu-item" @click="closeMenu">
             <i class="mdi mdi-shield-check"></i>
-            Privacy Policy
+            <span>Privacy Policy</span>
           </router-link>
-          <router-link to="/terms" class="menu-item">
+          
+          <router-link to="/terms" class="menu-item" @click="closeMenu">
             <i class="mdi mdi-file-document"></i>
-            Terms of Service
+            <span>Terms of Service</span>
           </router-link>
         </div>
-      </nav>
-    </transition>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useContentStore } from '@/stores/content'
+import { useRouter } from 'vue-router'
 
 const isOpen = ref(false)
+const store = useContentStore()
+const router = useRouter()
+
+const toggleMenu = () => {
+  isOpen.value = !isOpen.value
+}
+
+const closeMenu = () => {
+  isOpen.value = false
+}
 </script>
 
 <style scoped>
@@ -103,5 +155,54 @@ const isOpen = ref(false)
 .menu-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* Mobile-only buttons styles */
+.mobile-only-buttons {
+  display: none;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 0.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .mobile-only-buttons {
+    display: block !important;
+  }
+
+  .menu-button-mobile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  .menu-button-mobile:hover {
+    background: #f5f5f5;
+  }
+
+  .menu-button-mobile:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .menu-button-mobile i {
+    font-size: 1.2rem;
+  }
+
+  .menu {
+    min-width: 250px;
+  }
 }
 </style> 

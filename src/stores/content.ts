@@ -213,6 +213,75 @@ export const useContentStore = defineStore('content', () => {
 
   const hasContent = computed(() => markdownContent.value.trim().length > 0);
 
+  const exportHtml = () => {
+    // Create a Blob with the HTML content
+    const htmlBlob = new Blob([htmlContent.value], { type: 'text/html' });
+    
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(htmlBlob);
+    
+    // Set the filename using the document title or a default name
+    const filename = documentTitle.value ? 
+      `${documentTitle.value}.html` : 
+      'markdown-export.html';
+    link.download = filename;
+    
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  const exportMarkdown = () => {
+    // Create a Blob with the markdown content
+    const markdownBlob = new Blob([markdownContent.value], { type: 'text/markdown' });
+    
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(markdownBlob);
+    
+    // Set the filename using the document title or a default name
+    const filename = documentTitle.value ? 
+      `${documentTitle.value}.md` : 
+      'document.md';
+    link.download = filename;
+    
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  const exportTxt = () => {
+    // Create a Blob with the markdown content
+    const txtBlob = new Blob([markdownContent.value], { type: 'text/plain' });
+    
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(txtBlob);
+    
+    // Set the filename using the document title or a default name
+    const filename = documentTitle.value ? 
+      `${documentTitle.value}.txt` : 
+      'document.txt';
+    link.download = filename;
+    
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
   return {
     markdownContent,
     htmlContent,
@@ -224,6 +293,9 @@ export const useContentStore = defineStore('content', () => {
     selectedMargin,
     documentTitle,
     showToast,
-    hasContent
+    hasContent,
+    exportHtml,
+    exportMarkdown,
+    exportTxt
   };
 }); 
