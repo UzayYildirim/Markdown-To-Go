@@ -5,214 +5,175 @@
 </p>
 
 <p align="center">
-  <strong>A modern, feature-rich online Markdown editor with real-time preview and customization options.</strong>
+  **A modern, online Markdown editor with real-time preview and customization options.**
 </p>
 
 ![Responsive Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_Responsive.png?raw=true)
 
+## Available Online
+[Markdown To Go is now available online!](https://pages.cloudflare.com/)
+
 ## ✨ Features
 
-- **Real-time Preview**: See your formatted content instantly as you type
-- **Custom Font Selection**: Choose from a variety of professional fonts
-- **Color Customization**: Personalize your text color to match your brand
-- **Adjustable Margins**: Fine-tune the layout for perfect presentation
-- **PDF Export**: Generate professional PDFs with a single click
-- **No Account Required**: Start using immediately, no sign-up needed
-- **Local Storage**: Auto-saves your work in the browser
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Syntax Highlighting**: Beautiful code formatting for technical documentation
-- **Privacy-Focused**: Your content stays in your browser - we don't store anything
+* **Real-time Preview**: View formatted content as you type
+* **Font Selection**: Choose from various professional fonts
+* **Color Customization**: Personalize text color
+* **Adjustable Margins**: Fine-tune layout for presentation
+* **PDF Export**: Generate PDFs with one click
+* **No Account Required**: Start immediately, no sign-up
+* **Local Storage**: Auto-saves work in the browser
+* **Responsive Design**: Works on desktop and mobile
+* **Syntax Highlighting**: Code formatting for technical docs
+* **Privacy-Focused**: Content stays in your browser
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- pnpm (v8 or higher)
+* Node.js (v18 or higher)
+* pnpm (v8 or higher)
 
-### Installation
+### Installation & Development
 
-1. Clone the repository
-- bash
-- git clone https://github.com/uzayyildirim/markdown-to-go.git
+1. Clone the repository:
 
-2. Install dependencies
-- bash
-- cd markdown-to-go
-- pnpm install
+   ```bash
+   git clone https://github.com/uzayyildirim/markdown-to-go.git
+   cd markdown-to-go
+   ```
 
-3. Start the development server
-- bash
-- pnpm dev
+2. Install dependencies:
 
-4. Build for production
-- bash
-- pnpm build
+   ```bash
+   pnpm install
+   ```
 
-## 🛠️ Built With
+3. Start the development server:
 
-- [Vue 3](https://vuejs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/)
-- [Pinia](https://pinia.vuejs.org/)
-- [Marked](https://marked.js.org/)
-- [DOMPurify](https://github.com/cure53/DOMPurify)
+   ```bash
+   pnpm dev
+   ```
 
-## 📦 Project Structure
+4. Build for production:
 
-- **markdown-to-go/**
-  - **public/**: Static assets
-  - **src/**
-    - **assets/**: Global styles and assets
-    - **components/**: Vue components
-    - **router/**: Vue Router configuration
-    - **stores/**: Pinia stores
-    - **types/**: TypeScript type definitions
-    - **utils/**: Utility functions
-    - **views/**: Page components
-  - **scripts/**: Build and maintenance scripts
-  - **package.json**: Project dependencies and scripts
+   ```bash
+   pnpm build
+   ```
 
 ## 🚢 Deployment
 
-1. Build the project
+### Normal Build (Any Static Server)
 
-2. The built files will be in the `dist` directory. Deploy these files to your web server.
+1. Build the project:
 
-3. For optimal performance, configure your web server with the following:
-   - Enable gzip compression
-   - Set appropriate cache headers
-   - Configure SSL certificate
-   - Set up proper CORS headers if needed
+   ```bash
+   pnpm build
+   ```
 
-## 🌟 Support
+2. The output files will be in the `dist` directory. Deploy these files to your static hosting provider or web server. For best performance:
 
-If you find this project helpful, please consider:
-- Giving it a star ⭐
-- [Buying me a coffee](https://buymeacoffee.com/uzayyildirim)
+   * Enable gzip compression
+   * Set appropriate cache headers
+   * Configure SSL (HTTPS)
 
-![Mobile Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_Mobile.png?raw=true)
-![Print Dialog Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_PrintDialog.png?raw=true)
+### Cloudflare Pages (Optimized)
 
-## 🚀 Development
+This project includes optimizations for Cloudflare Pages, such as static routing, security headers, and asset caching.
 
-### Prerequisites
+#### Git Integration (Recommended)
 
-- Node.js 18 or higher
-- pnpm (recommended package manager)
+1. Push the code to a Git repository (e.g., GitHub).
+2. Go to [Cloudflare Pages](https://pages.cloudflare.com/) and create a new project.
+3. Connect your repository.
+4. Set build settings:
 
-### Setup
+   * **Framework preset**: None
+   * **Build command**: `pnpm build-cf`
+   * **Publish directory**: `dist`
+   * **Root directory**: `/`
+5. Save and deploy.
 
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd markdown-to-go
+#### Direct Upload
 
-# Install dependencies
-pnpm install
+1. Build locally:
 
-# Start development server
-pnpm dev
-```
-
-### Build
-
-```bash
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
-```
-
-## 🚀 Deployment
-
-### Cloudflare Pages
-
-This project is optimized for deployment to Cloudflare Pages. Follow these steps:
-
-#### Option 1: Git Integration (Recommended)
-
-1. Push your code to a Git repository (GitHub, GitLab, etc.)
-2. Go to [Cloudflare Pages](https://pages.cloudflare.com/)
-3. Click "Create a project" and connect your Git repository
-4. Configure the build settings:
-   - **Framework preset**: None
-   - **Build command**: `pnpm build-cf`
-   - **Build output directory**: `dist`
-   - **Root directory**: `/` (leave empty)
-5. Click "Save and Deploy"
-
-#### Option 2: Direct Upload
-
-1. Build the project locally:
    ```bash
    pnpm build-cf
    ```
 
-2. Upload the `dist` folder to Cloudflare Pages:
-   - Go to [Cloudflare Pages](https://pages.cloudflare.com/)
-   - Click "Upload assets"
-   - Drag and drop the `dist` folder
+2. Go to [Cloudflare Pages](https://pages.cloudflare.com/) and click "Upload assets".
 
-#### Build Configuration
+3. Upload the contents of the `dist` folder.
 
-The project includes Cloudflare Pages optimizations:
+## 🛠️ Built With
 
-- **Static routing**: Configured with `_redirects` file for SPA routing
-- **Security headers**: Set via `_headers` file
-- **Asset optimization**: Automatic compression and caching
-- **Bundle splitting**: Vendor and markdown libraries are split for better caching
+* Vue 3
+* TypeScript
+* Vite
+* Pinia
+* Marked.js
+* DOMPurify
 
-#### Environment Variables
+## 📦 Project Structure
 
-No environment variables are required for basic deployment. All processing happens client-side.
+* **public/**: Static assets
+* **src/**
 
-### Other Static Hosting Providers
+  * **assets/**: Global styles and images
+  * **components/**: Vue components
+  * **router/**: Vue Router config
+  * **stores/**: Pinia stores
+  * **types/**: TypeScript definitions
+  * **utils/**: Utility functions
+  * **views/**: Page components
+* **scripts/**: Build and maintenance scripts
+* **package.json**: Dependencies and scripts
 
-The built application in the `dist` folder can be deployed to any static hosting provider:
+## 🌟 Support
 
-- **Netlify**: Use build command `pnpm build` and publish directory `dist`
-- **Vercel**: Zero-config deployment, just import your Git repository
-- **GitHub Pages**: Use GitHub Actions with the build output from `dist`
-- **Firebase Hosting**: Deploy the `dist` folder contents
+If you find this project helpful, consider:
+
+* Giving it a star ⭐
+* [Buying me a coffee](https://buymeacoffee.com/uzayyildirim)
+
+![Mobile Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_Mobile.png?raw=true)
+![Print Dialog Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_PrintDialog.png?raw=true)
 
 ## 🚀 Performance
 
-- ⚡ **Lighthouse Score**: 100/100/100/100
-- 📦 **Bundle Size**: Optimized with code splitting
-- 🚀 **First Load**: < 100ms on fast connections
-- 💾 **Caching**: Aggressive caching for static assets
+* **Optimized Bundle Size** with code splitting
+* **Fast Initial Load** on modern connections
+* **Aggressive Caching** for static assets
 
 ## 🔒 Privacy & Security
 
-- 🔒 **No data collection**: All content stays in your browser
-- 🛡️ **Content Security Policy**: Strict CSP headers
-- 🧹 **Content Sanitization**: All HTML output is sanitized
-- 📱 **Offline capable**: Works without internet connection
+* **No Data Collection**: All content remains in your browser
+* **Content Security Policy**: Strict CSP headers
+* **Content Sanitization**: All HTML output is sanitized
+* **Offline Capable**: Works without an internet connection
 
 ## 🖥️ Browser Support
 
-- ✅ Chrome/Edge 80+
-- ✅ Firefox 75+
-- ✅ Safari 13+
-- ✅ Mobile browsers
+* Chrome/Edge 80+
+* Firefox 75+
+* Safari 13+
+* Modern mobile browsers
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## 🎉 Acknowledgments
 
-- Built with [Vue 3](https://vuejs.org/) and [Vite](https://vitejs.dev/)
-- Markdown parsing by [marked](https://marked.js.org/)
-- Content sanitization by [DOMPurify](https://github.com/cure53/DOMPurify)
-- Icons by [Material Design Icons](https://materialdesignicons.com/)
+* Vue 3 & Vite
+* Markdown parsing via Marked.js
+* Content sanitization by DOMPurify
+* Icons by Material Design Icons
