@@ -11,7 +11,7 @@
 ![Responsive Screenshot](https://github.com/UzayYildirim/Markdown-To-Go/blob/main/screenshots/MD2GO_Responsive.png?raw=true)
 
 ## Available Online
-[Markdown To Go is now available online!](https://pages.cloudflare.com/)
+[Markdown To Go is now available online!](https://markdown.to-go.cloud)
 
 ## ✨ Features
 
