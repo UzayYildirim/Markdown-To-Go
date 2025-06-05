@@ -18,6 +18,42 @@ export const useContentStore = defineStore('content', () => {
     return firstLine.slice(0, 27);
   });
 
+  // Helper function for safe localStorage operations
+  const safeLocalStorage = {
+    setItem: (key: string, value: string) => {
+      try {
+        localStorage.setItem(key, value);
+      } catch (e) {
+        console.warn('Failed to save to localStorage:', e);
+      }
+    },
+    getItem: (key: string): string | null => {
+      try {
+        return localStorage.getItem(key);
+      } catch (e) {
+        console.warn('Failed to read from localStorage:', e);
+        return null;
+      }
+    }
+  };
+
+  // Initialize from localStorage with error handling
+  const initializeFromStorage = () => {
+    try {
+      const savedContent = safeLocalStorage.getItem('markdownContent');
+      const savedFont = safeLocalStorage.getItem('selectedFont');
+      const savedColor = safeLocalStorage.getItem('selectedColor');
+      const savedMargin = safeLocalStorage.getItem('selectedMargin');
+
+      if (savedContent) markdownContent.value = savedContent;
+      if (savedFont) selectedFont.value = savedFont;
+      if (savedColor) selectedColor.value = savedColor;
+      if (savedMargin) selectedMargin.value = savedMargin;
+    } catch (e) {
+      console.warn('Failed to initialize from localStorage:', e);
+    }
+  };
+
   // Configure marked options
   marked.setOptions({
     gfm: true,
@@ -38,11 +74,11 @@ export const useContentStore = defineStore('content', () => {
       selectedColor.value = color;
       selectedMargin.value = margin;
       
-      // Save to localStorage
-      localStorage.setItem('markdownContent', content)
-      localStorage.setItem('selectedFont', font)
-      localStorage.setItem('selectedColor', color)
-      localStorage.setItem('selectedMargin', margin)
+      // Save to localStorage with error handling
+      safeLocalStorage.setItem('markdownContent', content);
+      safeLocalStorage.setItem('selectedFont', font);
+      safeLocalStorage.setItem('selectedColor', color);
+      safeLocalStorage.setItem('selectedMargin', margin);
       
       // Parse markdown to HTML with HTML enabled
       const html = await marked.parse(content, {
@@ -189,98 +225,98 @@ export const useContentStore = defineStore('content', () => {
   };
 
   const printDocument = () => {
-    showToast.value = true;
-    
-    // Longer delay to ensure toast is visible before print dialog
-    setTimeout(() => {
-      window.print();
-    }, 500);
-    
-    // Reset toast when print dialog closes
-    const onAfterPrint = () => {
-      showToast.value = false;
-      window.removeEventListener('afterprint', onAfterPrint);
-    };
-    
-    window.addEventListener('afterprint', onAfterPrint);
-    
-    // Fallback timeout in case afterprint doesn't fire
-    setTimeout(() => {
-      showToast.value = false;
-      window.removeEventListener('afterprint', onAfterPrint);
-    }, 10000);
+    try {
+      showToast.value = true;
+      
+      // Longer delay to ensure toast is visible before print dialog
+      setTimeout(() => {
+        window.print();
+      }, 500);
+      
+      // Reset toast when print dialog closes
+      const onAfterPrint = () => {
+        showToast.value = false;
+        window.removeEventListener('afterprint', onAfterPrint);
+      };
+      
+      window.addEventListener('afterprint', onAfterPrint);
+      
+      // Fallback timeout in case afterprint doesn't fire
+      setTimeout(() => {
+        showToast.value = false;
+        window.removeEventListener('afterprint', onAfterPrint);
+      }, 10000);
+    } catch (e) {
+      console.error('Error printing document:', e);
+      error.value = 'Failed to print document';
+    }
   };
 
   const hasContent = computed(() => markdownContent.value.trim().length > 0);
 
+  // Helper function for safe file exports
+  const safeExport = (blob: Blob, filename: string, type: string) => {
+    try {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    } catch (e) {
+      console.error(`Error exporting ${type}:`, e);
+      error.value = `Failed to export ${type} file`;
+    }
+  };
+
   const exportHtml = () => {
-    // Create a Blob with the HTML content
-    const htmlBlob = new Blob([htmlContent.value], { type: 'text/html' });
-    
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(htmlBlob);
-    
-    // Set the filename using the document title or a default name
-    const filename = documentTitle.value ? 
-      `${documentTitle.value}.html` : 
-      'markdown-export.html';
-    link.download = filename;
-    
-    // Trigger the download
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    try {
+      const htmlBlob = new Blob([htmlContent.value], { type: 'text/html' });
+      const filename = documentTitle.value ? 
+        `${documentTitle.value}.html` : 
+        'markdown-export.html';
+      
+      safeExport(htmlBlob, filename, 'HTML');
+    } catch (e) {
+      console.error('Error exporting HTML:', e);
+      error.value = 'Failed to export HTML file';
+    }
   };
 
   const exportMarkdown = () => {
-    // Create a Blob with the markdown content
-    const markdownBlob = new Blob([markdownContent.value], { type: 'text/markdown' });
-    
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(markdownBlob);
-    
-    // Set the filename using the document title or a default name
-    const filename = documentTitle.value ? 
-      `${documentTitle.value}.md` : 
-      'document.md';
-    link.download = filename;
-    
-    // Trigger the download
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    try {
+      const markdownBlob = new Blob([markdownContent.value], { type: 'text/markdown' });
+      const filename = documentTitle.value ? 
+        `${documentTitle.value}.md` : 
+        'document.md';
+      
+      safeExport(markdownBlob, filename, 'Markdown');
+    } catch (e) {
+      console.error('Error exporting Markdown:', e);
+      error.value = 'Failed to export Markdown file';
+    }
   };
 
   const exportTxt = () => {
-    // Create a Blob with the markdown content
-    const txtBlob = new Blob([markdownContent.value], { type: 'text/plain' });
-    
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(txtBlob);
-    
-    // Set the filename using the document title or a default name
-    const filename = documentTitle.value ? 
-      `${documentTitle.value}.txt` : 
-      'document.txt';
-    link.download = filename;
-    
-    // Trigger the download
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    try {
+      const txtBlob = new Blob([markdownContent.value], { type: 'text/plain' });
+      const filename = documentTitle.value ? 
+        `${documentTitle.value}.txt` : 
+        'document.txt';
+      
+      safeExport(txtBlob, filename, 'text');
+    } catch (e) {
+      console.error('Error exporting text:', e);
+      error.value = 'Failed to export text file';
+    }
   };
+
+  // Initialize store with saved data
+  initializeFromStorage();
 
   return {
     markdownContent,

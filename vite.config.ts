@@ -12,32 +12,32 @@ export default defineConfig({
       }
     })
   ],
+  // Cloudflare Pages configuration
+  base: '/',
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      events: 'events',
-      stream: 'stream-browserify',
-      util: 'util'
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     },
-  },
-  optimizeDeps: {
-    include: ['html-to-docx'],
-    esbuildOptions: {
-      mainFields: ['module', 'main'],
-      resolveExtensions: ['.js', '.jsx', '.ts', '.tsx'],
-      format: 'esm'
-    }
   },
   build: {
-    rollupOptions: {
-      output: {
-        format: 'esm'
+    // Optimized for Cloudflare Pages
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
       }
     },
-    commonjsOptions: {
-      include: [/node_modules/],
-      transformMixedEsModules: true,
-      requireReturnsDefault: 'namespace'
+    rollupOptions: {
+      output: {
+        format: 'esm',
+        manualChunks: {
+          vendor: ['vue', 'vue-router', 'pinia'],
+          markdown: ['marked', 'dompurify']
+        }
+      }
     }
   },
   define: {

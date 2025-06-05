@@ -7,19 +7,45 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
 node_modules
-.DS_Store
+.pnp
+.pnp.js
+
+# Build output
 dist
 dist-ssr
 coverage
 *.local
 
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cloudflare
+.dev.vars
+wrangler.toml
+.wrangler
+
+# Testing
 /cypress/videos/
 /cypress/screenshots/
+*.tsbuildinfo
+*.md
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 *.suo
 *.ntvs*
@@ -27,4 +53,27 @@ coverage
 *.sln
 *.sw?
 
-*.tsbuildinfo
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Cache directories
+.cache
+.parcel-cache
+.next
+.nuxt
+.output
+.vite
+
+# Lock files (keep pnpm-lock.yaml as it's the primary package manager)
+package-lock.json
+yarn.lock
