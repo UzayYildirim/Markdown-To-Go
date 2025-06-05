@@ -11,9 +11,6 @@ importers:
       '@mdi/font':
         specifier: ^7.4.47
         version: 7.4.47
-      '@types/dompurify':
-        specifier: ^3.2.0
-        version: 3.2.0
       dompurify:
         specifier: ^3.2.3
         version: 3.2.3
@@ -551,10 +548,6 @@ packages:
 
   '@tsconfig/node18@18.2.4':
     resolution: {integrity: sha512-5xxU8vVs9/FNcvm3gE07fPbn9tl6tqGGWA9tSlwsUEkBxtRnTsNmwrV8gasZ9F/EobaSv9+nu8AxUKccw77JpQ==}
-
-  '@types/dompurify@3.2.0':
-    resolution: {integrity: sha512-Fgg31wv9QbLDA0SpTOXO3MaxySc4DKGLi8sna4/Utjo4r3ZRPdCt4UQee8BWr+Q5z21yifghREPJGYaEOEIACg==}
-    deprecated: This is a stub types definition. dompurify provides its own type definitions, so you do not need this installed.
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -1700,10 +1693,6 @@ snapshots:
     optional: true
 
   '@tsconfig/node18@18.2.4': {}
-
-  '@types/dompurify@3.2.0':
-    dependencies:
-      dompurify: 3.2.3
 
   '@types/estree@1.0.6': {}
 
