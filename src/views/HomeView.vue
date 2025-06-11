@@ -3,7 +3,7 @@
     <div class="input-section" :class="{ 'reveal': revealed }">
       <div class="toolbar" :class="{ 'reveal': revealed }">
         <div class="toolbar-group">
-          <select v-model="selectedFont" @change="applyFont" class="font-select" title="Font Family">
+          <select v-model="selectedFont" @change="applyFont" class="font-select" data-tooltip="Font Family">
             <option value="Calibri">Calibri</option>
             <option value="Arial">Arial</option>
             <option value="Verdana">Verdana</option>
@@ -26,7 +26,7 @@
             v-model="selectedColor" 
             @change="applyColor" 
             class="color-picker" 
-            title="Text Color"
+            data-tooltip="Text Color"
           >
         </div>
 
@@ -35,7 +35,7 @@
             v-model="selectedMargin" 
             @change="applyMargin" 
             class="margin-select" 
-            title="Content Margins"
+            data-tooltip="Content Margins"
           >
             <option value="0">No Margin</option>
             <option value="0.5">Extra Narrow</option>
@@ -47,39 +47,52 @@
         </div>
 
         <div class="toolbar-group">
-          <button @click="insertMarkdown('**', '**')" title="Bold">
+          <button @click="insertMarkdown('**', '**')" data-tooltip="Bold">
             <i class="mdi mdi-format-bold"></i>
           </button>
-          <button @click="insertMarkdown('*', '*')" title="Italic">
+          <button @click="insertMarkdown('*', '*')" data-tooltip="Italic">
             <i class="mdi mdi-format-italic"></i>
           </button>
-          <button @click="insertMarkdown('# ', '')" title="Heading 1">
+          <button @click="insertMarkdown('# ', '')" data-tooltip="Heading 1">
             <i class="mdi mdi-format-header-1"></i>
           </button>
-          <button @click="insertMarkdown('## ', '')" title="Heading 2">
+          <button @click="insertMarkdown('## ', '')" data-tooltip="Heading 2">
             <i class="mdi mdi-format-header-2"></i>
           </button>
         </div>
 
         <div class="toolbar-group">
-          <button @click="insertMarkdown('- ', '')" title="Bullet List">
+          <button @click="insertMarkdown('- ', '')" data-tooltip="Bullet List">
             <i class="mdi mdi-format-list-bulleted"></i>
           </button>
-          <button @click="insertMarkdown('1. ', '')" title="Numbered List">
+          <button @click="insertMarkdown('1. ', '')" data-tooltip="Numbered List">
             <i class="mdi mdi-format-list-numbered"></i>
           </button>
-          <button @click="insertMarkdown('[', '](url)')" title="Link">
+          <button @click="insertMarkdown('[', '](url)')" data-tooltip="Link">
             <i class="mdi mdi-link"></i>
           </button>
-          <button @click="insertMarkdown('![alt text](', ')')" title="Image">
+          <button @click="insertMarkdown('![alt text](', ')')" data-tooltip="Image">
             <i class="mdi mdi-image"></i>
           </button>
-          <button @click="insertMarkdown('---\n', '')" title="Horizontal Line">
+          <button @click="insertMarkdown('---\n', '')" data-tooltip="Horizontal Line">
             <i class="mdi mdi-minus"></i>
           </button>
-          <button @click="insertMarkdown('```\n', '\n```')" title="Code Block">
+          <button @click="insertMarkdown('```\n', '\n```')" data-tooltip="Code Block">
             <i class="mdi mdi-code-tags"></i>
           </button>
+        </div>
+
+        <div class="toolbar-group">
+          <button @click="triggerFileImport" data-tooltip="Import File (MD, TXT, HTML)">
+            <i class="mdi mdi-file-import"></i>
+          </button>
+          <input 
+            type="file" 
+            ref="fileInputRef" 
+            @change="handleFileImport" 
+            accept=".md,.txt,.html,.htm" 
+            style="display: none;"
+          >
         </div>
       </div>
 
@@ -115,6 +128,7 @@ import { usePreventClose } from '@/composables/usePreventClose'
 
 const store = useContentStore()
 const textareaRef = ref<HTMLTextAreaElement>()
+const fileInputRef = ref<HTMLInputElement>()
 const selectedFont = ref('Calibri')
 const selectedColor = ref('#333333')
 const selectedMargin = ref('1')
@@ -187,6 +201,31 @@ const insertMarkdown = (prefix: string, suffix: string) => {
   textarea.focus()
   const newCursorPos = start + prefix.length + selectedText.length + suffix.length
   textarea.setSelectionRange(newCursorPos, newCursorPos)
+}
+
+const triggerFileImport = () => {
+  if (fileInputRef.value) {
+    fileInputRef.value.click()
+  }
+}
+
+const handleFileImport = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  
+  if (!file) return
+  
+  if (!store.validateFileType(file)) {
+    store.error = 'Please select a valid file type (MD, TXT, HTML)'
+    return
+  }
+  
+  store.importFile(file, () => {
+    // Reset the file input so the same file can be imported again
+    if (fileInputRef.value) {
+      fileInputRef.value.value = ''
+    }
+  })
 }
 
 onMounted(() => {

@@ -6,11 +6,44 @@ import AppMenu from './components/AppMenu.vue'
 import CookieNotice from './components/CookieNotice.vue'
 import { useRevealEffect } from './utils/animations'
 import { usePreventClose } from './composables/usePreventClose'
-import { watch } from 'vue'
+import { watch, computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 const store = useContentStore()
 const revealed = useRevealEffect()
+const route = useRoute()
+const fileInputRef = ref<HTMLInputElement>()
+
+// Only show export buttons on home route
+const showExportButtons = computed(() => route.name === 'home')
+
 usePreventClose()
+
+// Import functionality
+const triggerFileImport = () => {
+  if (fileInputRef.value) {
+    fileInputRef.value.click()
+  }
+}
+
+const handleFileImport = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  
+  if (!file) return
+  
+  if (!store.validateFileType(file)) {
+    store.error = 'Please select a valid file type (MD, TXT, HTML)'
+    return
+  }
+  
+  store.importFile(file, () => {
+    // Reset the file input so the same file can be imported again
+    if (fileInputRef.value) {
+      fileInputRef.value.value = ''
+    }
+  })
+}
 
 // Debug: Monitor revealed state
 watch(revealed, (newValue) => {
@@ -33,50 +66,70 @@ watch(revealed, (newValue) => {
         </router-link>
       </div>
       <div class="nav-controls">
-        <button 
-          @click="store.printDocument"
-          class="print-button"
-          :class="{ 'reveal': revealed, 'disabled': !store.hasContent }"
-          :disabled="!store.hasContent"
-          title="Print document"
-        >
-          <i class="mdi mdi-printer"></i>
-          <span class="button-text" :class="{ 'reveal': revealed }">Print</span>
-        </button>
-
-        <div class="export-group" :class="{ 'reveal': revealed }">
+        <!-- Import and Export buttons group - only visible on home route -->
+        <div v-if="showExportButtons" class="export-controls" :class="{ 'reveal': revealed }">
+          <!-- Import button -->
           <button 
-            @click="store.exportHtml"
-            class="export-button"
-            :class="{ 'disabled': !store.hasContent }"
-            :disabled="!store.hasContent"
-            title="Export as HTML"
+            @click="triggerFileImport"
+            class="export-btn import"
+            data-tooltip="Import File (MD, TXT, HTML)"
           >
-            <i class="mdi mdi-language-html5"></i>
-            <span class="button-text" :class="{ 'reveal': revealed }">HTML</span>
+            <i class="mdi mdi-file-import"></i>
+            <span class="btn-text" :class="{ 'reveal': revealed }">Import</span>
           </button>
 
+          <!-- Print button -->
           <button 
-            @click="store.exportMarkdown"
-            class="export-button"
-            :class="{ 'disabled': !store.hasContent }"
+            @click="store.printDocument"
+            class="export-btn primary"
             :disabled="!store.hasContent"
-            title="Export as Markdown"
+            data-tooltip="Print document"
           >
-            <i class="mdi mdi-language-markdown"></i>
-            <span class="button-text" :class="{ 'reveal': revealed }">MD</span>
+            <i class="mdi mdi-printer"></i>
+            <span class="btn-text" :class="{ 'reveal': revealed }">Print</span>
           </button>
 
-          <button 
-            @click="store.exportTxt"
-            class="export-button"
-            :class="{ 'disabled': !store.hasContent }"
-            :disabled="!store.hasContent"
-            title="Export as Text"
+          <!-- Export group -->
+          <div class="export-group">
+            <button 
+              @click="store.exportHtml"
+              class="export-btn secondary"
+              :disabled="!store.hasContent"
+              data-tooltip="Export as HTML"
+            >
+              <i class="mdi mdi-language-html5"></i>
+              <span class="btn-text" :class="{ 'reveal': revealed }">HTML</span>
+            </button>
+
+            <button 
+              @click="store.exportMarkdown"
+              class="export-btn secondary"
+              :disabled="!store.hasContent"
+              data-tooltip="Export as Markdown"
+            >
+              <i class="mdi mdi-language-markdown"></i>
+              <span class="btn-text" :class="{ 'reveal': revealed }">MD</span>
+            </button>
+
+            <button 
+              @click="store.exportTxt"
+              class="export-btn secondary"
+              :disabled="!store.hasContent"
+              data-tooltip="Export as Text"
+            >
+              <i class="mdi mdi-file-document-outline"></i>
+              <span class="btn-text" :class="{ 'reveal': revealed }">TXT</span>
+            </button>
+          </div>
+
+          <!-- Hidden file input for import -->
+          <input 
+            type="file" 
+            ref="fileInputRef" 
+            @change="handleFileImport" 
+            accept=".md,.txt,.html,.htm" 
+            style="display: none;"
           >
-            <i class="mdi mdi-file-document-outline"></i>
-            <span class="button-text" :class="{ 'reveal': revealed }">TXT</span>
-          </button>
         </div>
         
         <AppMenu />
@@ -99,7 +152,7 @@ watch(revealed, (newValue) => {
         <button 
           class="toast-close" 
           @click="store.showToast = false"
-          title="Dismiss"
+          data-tooltip="Dismiss"
         >
           <i class="mdi mdi-close"></i>
         </button>
@@ -211,57 +264,123 @@ watch(revealed, (newValue) => {
 .nav-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
-.print-button {
+/* New modern export controls */
+.export-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-  background-color: white;
-  color: #2c3e50;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   opacity: 0;
   transform: translateX(20px);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  will-change: transform, opacity;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.print-button.reveal {
+.export-controls.reveal {
   opacity: 1;
   transform: translateX(0);
   transition-delay: 0.6s;
 }
 
-.print-button i {
-  font-size: 1.3rem;
+.export-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.25rem;
+  backdrop-filter: blur(10px);
+}
+
+/* Modern export button styles */
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.export-btn.import {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.export-btn.primary {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  color: #2c3e50;
+  border: 2px solid rgba(255,255,255,0.4);
+}
+
+.export-btn.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.export-btn i {
+  font-size: 1.2rem;
   transition: transform 0.3s ease;
 }
 
-.print-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  background-color: #f8f9fa;
+.export-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
 }
 
-.print-button:hover i {
+.export-btn.import:hover {
+  background: linear-gradient(135deg, #45a049, #3d8b40);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.export-btn.primary:hover {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.export-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.export-btn:hover i {
   transform: scale(1.1);
 }
 
-.button-text {
+.export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.export-btn:disabled:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+}
+
+.btn-text {
   opacity: 0;
   transform: translateX(-10px);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   will-change: transform, opacity;
 }
 
-.button-text.reveal {
+.btn-text.reveal {
   opacity: 1;
   transform: translateX(0);
   transition-delay: 0.8s;
@@ -275,80 +394,61 @@ watch(revealed, (newValue) => {
   font-family: 'Montserrat', sans-serif;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* Tooltip styles */
-[title] {
+/* Enhanced tooltip styles with proper positioning */
+[data-tooltip] {
   position: relative;
   font-family: 'Montserrat', sans-serif;
 }
 
-[title]:hover::after {
-  content: attr(title);
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
   position: absolute;
-  bottom: 100%;
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   padding: 0.5rem 0.75rem;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.9);
   color: white;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
   white-space: nowrap;
   z-index: 1000;
-  margin-bottom: 5px;
+  opacity: 0;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-out forwards;
 }
 
-/* Export button styles */
-.export-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-  background-color: white;
-  color: #2c3e50;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  will-change: transform, opacity;
+[data-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s ease-out forwards;
 }
 
-.export-button.reveal {
-  opacity: 1;
-  transform: translateX(0);
-  transition-delay: 0.7s;
-}
-
-.export-button i {
-  font-size: 1.3rem;
-  transition: transform 0.3s ease;
-}
-
-.export-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  background-color: #f8f9fa;
-}
-
-.export-button:hover i {
-  transform: scale(1.1);
-}
-
-.export-button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.export-button.disabled:hover {
+/* Tooltip positioning for right-aligned elements */
+.nav-controls [data-tooltip]:hover::after {
+  left: auto;
+  right: 0;
   transform: none;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-controls [data-tooltip]:hover::before {
+  left: auto;
+  right: 1rem;
+  transform: none;
+}
+
+@keyframes tooltipFadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 /* Responsive adjustments */
@@ -366,7 +466,7 @@ button:disabled {
     height: 1.5rem;
   }
 
-  .print-button, .export-group {
+  .export-controls {
     display: none !important;
   }
 }
@@ -478,29 +578,5 @@ button:disabled {
 
 .logo-link:hover {
   background: none !important;
-}
-
-.print-button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.print-button.disabled:hover {
-  background: transparent;
-}
-
-/* Add these styles after the existing export-button styles */
-.export-group {
-  display: flex;
-  gap: 0.5rem;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.export-group.reveal {
-  opacity: 1;
-  transform: translateX(0);
-  transition-delay: 0.7s;
 }
 </style>

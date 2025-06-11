@@ -315,6 +315,45 @@ export const useContentStore = defineStore('content', () => {
     }
   };
 
+  const importFile = (file: File, callback?: () => void) => {
+    try {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        try {
+          const content = e.target?.result as string;
+          if (content !== null && content !== undefined) {
+            // For all file types (markdown, txt, html), put content directly into markdown editor
+            // Since the editor can handle HTML editing, no need to convert HTML to markdown
+            updateContent(content, selectedFont.value, selectedColor.value, selectedMargin.value);
+            error.value = null;
+            if (callback) callback();
+          } else {
+            error.value = 'Failed to read file content';
+          }
+        } catch (e) {
+          const errorMsg = e instanceof Error ? e.message : 'Failed to process file content';
+          error.value = errorMsg;
+        }
+      };
+      
+      reader.onerror = () => {
+        error.value = 'Failed to read file';
+      };
+      
+      reader.readAsText(file);
+    } catch (e) {
+      const errorMsg = e instanceof Error ? e.message : 'Failed to import file';
+      error.value = errorMsg;
+    }
+  };
+
+  const validateFileType = (file: File): boolean => {
+    const allowedTypes = ['.md', '.txt', '.html', '.htm'];
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    return allowedTypes.indexOf(fileExtension) !== -1;
+  };
+
   // Initialize store with saved data
   initializeFromStorage();
 
@@ -332,6 +371,8 @@ export const useContentStore = defineStore('content', () => {
     hasContent,
     exportHtml,
     exportMarkdown,
-    exportTxt
+    exportTxt,
+    importFile,
+    validateFileType
   };
 }); 

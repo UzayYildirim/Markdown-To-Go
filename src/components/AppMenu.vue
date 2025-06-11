@@ -1,6 +1,6 @@
 <template>
   <div class="menu-container">
-    <button class="menu-button" @click="toggleMenu" title="Menu">
+    <button class="menu-button" @click="toggleMenu" data-tooltip="Menu">
       <i class="mdi mdi-menu"></i>
     </button>
 
